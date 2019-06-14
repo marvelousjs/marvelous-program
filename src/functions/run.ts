@@ -36,7 +36,7 @@ export const run = (program: IProgram) => {
         p.actions[action].args.forEach((arg, index) => {
           if (arg.required && !args[index]) {
             throw new Error(`<${arg.name}> is required`);
-          } else if (arg.enum && !arg.enum.includes(args[index])) {
+          } else if (arg.enum && args[index] && !arg.enum.includes(args[index])) {
             throw new Error(`<${arg.name}> must be one of the following: ${arg.enum.join(', ')}`);
           }
         });
