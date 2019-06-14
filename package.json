@@ -1,0 +1,20 @@
+{
+  "name": "@marvelousjs/command",
+  "version": "0.1.0",
+  "description": "the marvelous command",
+  "main": "./dist/app.js",
+  "dependencies": {},
+  "devDependencies": {
+    "@types/node": "^10.12.18",
+    "typescript": "^3.2.1"
+  },
+  "files": [
+    "bin/",
+    "dist/"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "test": "NODE_ENV=test mocha -r ts-node/register src/**/*.spec.ts",
+    "watch": "tsc -w"
+  }
+}
