@@ -3,7 +3,9 @@
   "version": "0.1.0",
   "description": "the marvelous command",
   "main": "./dist/app.js",
-  "dependencies": {},
+  "dependencies": {
+    "chalk": "^2.4.2"
+  },
   "devDependencies": {
     "@types/node": "^10.12.18",
     "typescript": "^3.2.1"
