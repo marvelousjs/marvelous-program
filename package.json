@@ -1,7 +1,7 @@
 {
-  "name": "@marvelousjs/command",
+  "name": "@marvelousjs/program",
   "version": "0.1.0",
-  "description": "the marvelous command",
+  "description": "the marvelous program",
   "main": "./dist/app.js",
   "dependencies": {
     "chalk": "^2.4.2"
