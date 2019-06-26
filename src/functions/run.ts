@@ -5,8 +5,21 @@ import { formatArg, parseArgv } from '../functions';
 
 export const run = async (program: IProgram) => {
   try {
-    const programName = process.argv[1].split('/').slice(-1)[0];
-    const { actionName, args, props } = parseArgv(process.argv.slice(2));
+    const argv = process.argv;
+
+    let programName = argv[1].split('/').slice(-1)[0];
+    if (programName.includes('-')) {
+      const parts = programName.split('-');
+      programName = parts[0];
+      if (parts[1]) {
+        argv[3] = parts[1];
+      }
+      if (parts[2]) {
+        argv[4] = parts[2];
+      }
+    }
+
+    const { actionName, args, props } = parseArgv(argv.slice(2));
 
     const p = program({ args });
 
