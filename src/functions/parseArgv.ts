@@ -1,5 +1,5 @@
 export function parseArgv(argv: string[]) {
-  const action = argv[0];
+  const actionName = argv[0];
 
   const { props, args }: { props: any; args: string[] } = argv.slice(1).reduce(
     (v, a) => {
@@ -22,7 +22,7 @@ export function parseArgv(argv: string[]) {
   );
 
   const object = {
-    action,
+    actionName,
     props,
     args
   };

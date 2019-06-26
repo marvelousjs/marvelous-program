@@ -12,6 +12,7 @@ export interface IProgramConfig {
     [name: string]: {
       action: IAction;
       args?: IArg[];
+      description?: string;
       flags?: string[];
     };
   };
