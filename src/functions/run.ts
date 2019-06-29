@@ -60,7 +60,7 @@ export const run = async (program: IProgram) => {
       return;
     }
 
-    forEach(actionNames, async (actionName) => {
+    await forEach(actionNames, async (actionName) => {
       if (p.actions[actionName]) {
         if (p.actions[actionName].args) {
           p.actions[actionName].args.forEach((arg, index) => {
