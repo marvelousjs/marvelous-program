@@ -1,4 +1,5 @@
 import chalk from 'chalk';
+import * as forEach from 'p-map';
 
 import { IArg, IProgram } from '../interfaces';
 import { formatArg, parseArgv } from '../functions';
@@ -19,11 +20,11 @@ export const run = async (program: IProgram) => {
       }
     }
 
-    const { actionName, args, props } = parseArgv(argv.slice(2));
+    const { actionNames, args, props } = parseArgv(argv.slice(2));
 
     const p = program({ args });
 
-    if (!actionName || actionName === 'help') {
+    if (actionNames.length === 0 || actionNames.includes('help')) {
       console.log(`Usage:\n\n${chalk.bold(programName)} <action>\n`)
       console.log('Actions:\n');
       Object.entries(p.actions).forEach(([actionName, action]) => {
@@ -33,19 +34,11 @@ export const run = async (program: IProgram) => {
       return;
     }
 
-    if (!p.actions[actionName]) {
-      throw new Error('Action does not exist.');
-    }
-
-    if (args.length === 0) {
-      const action = p.actions[actionName];
-      console.log(`Usage:\n\n${chalk.bold(programName)} ${chalk.bold(actionName)} ${action.args.map(arg => formatArg(arg, true)).join(' ')}`);
-      if (action.description) {
-        console.log('\nDescription:\n');
-        console.log(chalk.bold(action.description));
-      }
-      return;
-    }
+    actionNames.forEach((actionName) => {
+      if (!p.actions[actionName]) {
+        throw new Error('Action does not exist.');
+      }  
+    });
 
     if (props.help) {
       const parseArg = (arg: IArg) => {
@@ -59,23 +52,29 @@ export const run = async (program: IProgram) => {
         output += arg.required ? '>' : ']';
         return output;
       };
-      const allArgs = p.actions[actionName].args ? p.actions[actionName].args.map(parseArg).join('') : '';
-      console.log(`Usage: ${programName} ${actionName}${allArgs}`);
+      
+      actionNames.forEach((actionName) => {
+        const allArgs = p.actions[actionName].args ? p.actions[actionName].args.map(parseArg).join('') : '';
+        console.log(`Usage: ${programName} ${actionName}${allArgs}`);
+      });
       return;
     }
 
-    if (p.actions[actionName]) {
-      if (p.actions[actionName].args) {
-        p.actions[actionName].args.forEach((arg, index) => {
-          if (arg.enum && (arg.required || args[index]) && !arg.enum.includes(args[index])) {
-            throw new Error(`<${arg.name}> must be one of the following: ${arg.enum.join(', ')}`);
-          } else if (arg.required && !args[index]) {
-            throw new Error(`<${arg.name}> is required`);
-          }
-        });
+    forEach(actionNames, async (actionName) => {
+      if (p.actions[actionName]) {
+        if (p.actions[actionName].args) {
+          p.actions[actionName].args.forEach((arg, index) => {
+            if (arg.enum && (arg.required || args[index]) && !arg.enum.includes(args[index])) {
+              throw new Error(`<${arg.name}> must be one of the following: ${arg.enum.join(', ')}`);
+            } else if (arg.required && !args[index]) {
+              throw new Error(`<${arg.name}> is required`);
+            }
+          });
+        }
+        await p.actions[actionName].action(props);
       }
-      await p.actions[actionName].action(props);
-    }
+    }, { concurrency: 1 });
+
   } catch (error) {
     console.log(chalk.red(`ERROR: ${error.message}`));
   }
