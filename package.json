@@ -1,6 +1,6 @@
 {
   "name": "@marvelousjs/program",
-  "version": "0.5.1",
+  "version": "0.5.2",
   "description": "the marvelous program",
   "main": "./dist/app.js",
   "dependencies": {
